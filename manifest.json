@@ -1,0 +1,9 @@
+{
+  "name": "Personal Health",
+  "short_name": "Health",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#172b4d",
+  "description": "Personal routines, habits, guided activities, fasting and journal."
+}

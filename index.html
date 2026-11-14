@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172b4d">
+<title>Personal Health</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div><div class="eyebrow">YOUR WELLNESS SPACE</div><h1>Personal Health</h1></div>
+  <button id="installBtn" class="ghost hidden">Install app</button>
+</header>
+<nav class="tabs" aria-label="Main navigation">
+  <button data-page="habits" class="active">Daily habits</button>
+  <button data-page="overview">Overview</button>
+  <button data-page="routines">Routines</button>
+  <button data-page="fasting">Fasting</button>
+  <button data-page="journal">Journal</button>
+  <button data-page="currentActivity">Current activity</button>
+  <button data-page="settings">Settings</button>
+</nav>
+<main id="app">
+<section id="overview" class="page">
+  <div class="page-heading"><div><p class="eyebrow">YOUR PROGRESS</p><h2>Overview</h2></div><input id="overviewDate" type="date"></div>
+  <div id="overviewStats" class="stats"></div>
+  <div class="panel" id="weightGoalPanel">
+    <div class="section-row"><div><h3>Weight goal & weekly check-in</h3><p class="muted">Choose a target, deadline and weekly weigh-in day.</p></div><button id="resetWeightGoal" type="button" class="danger">Reset goal & logs</button></div>
+    <form id="weightGoalForm" class="form-grid">
+      <label>Starting weight<input id="goalStartWeight" type="number" min="1" step="0.1" required></label>
+      <label>Target weight<input id="goalTargetWeight" type="number" min="1" step="0.1" required></label>
+      <label>Weight unit<select id="goalWeightUnit"><option value="kg">kg</option><option value="lb">lb</option></select></label>
+      <label>Start date<input id="goalStartDate" type="date" required></label>
+      <label>Target date<input id="goalEndDate" type="date" required></label>
+      <label>Weekly weigh-in day<select id="weighDay"><option value="0">Sunday</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option></select></label>
+      <button class="primary" type="submit">Save / update goal</button>
+    </form>
+    <div id="weightGoalProgress"></div>
+    <div class="toolbar"><label style="flex:1;min-width:140px">Weekly weight<input id="weeklyWeight" type="number" min="1" step="0.1" placeholder="Enter weight"></label><label style="flex:1;min-width:140px">Weigh-in date<input id="weeklyWeightDate" type="date"></label><button id="saveWeight" class="primary">Log weight</button></div>
+    <div id="weightHistory"></div>
+  </div>
+  <div class="panel"><h3>Today's plan</h3><div id="todaySummary" class="empty">Add your planned habits to see them here.</div></div>
+  <div class="panel"><h3>Routine library</h3><div id="routineSummary" class="routine-grid"></div></div>
+  <div class="panel"><h3>Weekly completion</h3><div id="weeklyChart"></div></div>
+  <div class="panel"><h3>Monthly completion</h3><div id="monthlyChart"></div></div>
+</section>
+
+<section id="routines" class="page">
+  <div class="page-heading"><div><p class="eyebrow">BUILD YOUR PROGRAM</p><h2>Routine library</h2></div></div>
+  <div class="subtabs" id="routineTabs">
+    <button data-kind="workout" class="active">Workout</button><button data-kind="cardio">Cardio</button>
+    <button data-kind="stretch">Stretch</button><button data-kind="meditation">Meditation</button><button data-kind="care">Skin & hair care</button>
+  </div>
+  <div class="panel">
+    <div class="section-row"><div><h3 id="routineTitle">Workouts</h3><p class="muted">Create reusable routines and assign them to days.</p></div><button id="addRoutine" class="primary">＋ Create</button></div>
+    <div id="routineList"></div>
+  </div>
+  <div class="panel hidden" id="routineEditor">
+    <div class="section-row"><h3 id="editorTitle">Create routine</h3><button id="closeEditor" class="ghost">Close</button></div>
+    <form id="routineForm">
+      <input type="hidden" id="routineId">
+      <label>Routine name<input id="routineName" required placeholder="e.g. Upper body A"></label>
+      <div id="routineTypeFields"></div>
+      <label>Planned days <span class="muted">(optional — leave all unselected for no planned day)</span></label>
+      <div class="days" id="routineDays"></div>
+      <label>General notes<textarea id="routineNotes" rows="2" placeholder="Optional notes"></textarea></label>
+      <button class="primary" type="submit">Save routine</button>
+    </form>
+  </div>
+  <div class="panel hidden" id="sessionPanel">
+    <div class="section-row"><h3 id="sessionTitle">Session</h3><button class="ghost" id="closeSession">Close</button></div>
+    <div id="sessionContent"></div>
+  </div>
+</section>
+
+<section id="habits" class="page active">
+  <div class="page-heading"><div><p class="eyebrow">PLAN AND TRACK</p><h2>Daily habits</h2></div><input type="date" id="habitDate"></div>
+  <div class="subtabs"><button data-habit-view="log" class="active">Daily routine log</button><button data-habit-view="plan">Planned</button></div>
+  <div id="habitPlan" class="panel hidden">
+    <div class="section-row"><div><h3>Plan for <span id="planDay"></span></h3><p class="muted">Add habits in the order you want to do them.</p></div><button id="addHabit" class="primary">＋ Add habit</button></div>
+    <div class="toolbar"><button id="copyWeek" class="secondary">Carry forward previous week</button><span class="muted" id="copyStatus"></span></div>
+    <div id="plannedList"></div>
+    <div id="habitEditor" class="inline-editor hidden">
+      <h3 id="habitEditorTitle">Add habit</h3>
+      <form id="habitForm">
+        <input type="hidden" id="habitId">
+        <label>Habit type<select id="habitType"><option value="workout">Workout</option><option value="cardio">Cardio</option><option value="stretch">Stretch</option><option value="meditation">Meditation</option><option value="care">Skin & hair care</option><option value="other">Other</option></select></label>
+        <div id="habitRoutinePicker"></div>
+        <label id="otherNameWrap" class="hidden">Habit name<input id="otherName" placeholder="e.g. Drink 2 litres of water"></label>
+        <label>Details / notes<textarea id="habitDetails" rows="2"></textarea></label>
+        <div class="toolbar"><button type="submit" class="primary">Save habit</button><button type="button" id="cancelHabit" class="secondary">Cancel</button></div>
+      </form>
+    </div>
+  </div>
+  <div id="habitLog" class="panel"><div class="section-row"><h3>Daily routine log</h3><span class="muted">Tick each item as you complete it.</span></div><div id="logList"></div></div>
+</section>
+
+<section id="fasting" class="page">
+  <div class="page-heading"><div><p class="eyebrow">TIME-RESTRICTED EATING & FAST LOG</p><h2>Intermittent fasting</h2></div></div>
+  <div class="panel">
+    <h3>Start a fast</h3>
+    <p class="muted">Choose a fasting pattern. The timer uses your saved start time, which you can correct if you forgot to start the log on time.</p>
+    <div class="form-grid">
+      <label>Fast type<select id="fastType"><option value="16">16:8 — 16-hour fast</option><option value="18">18:6 — 18-hour fast</option><option value="20">20:4 — 20-hour fast</option><option value="24">24-hour fast</option><option value="36">36-hour fast</option><option value="48">48-hour fast</option><option value="72">72-hour fast</option><option value="alternate">Alternate-day fast (36-hour example)</option><option value="custom">Custom duration</option></select></label>
+      <label id="customFastWrap" class="hidden">Custom fasting hours<input id="customFastHours" type="number" min="1" max="72" value="16"></label>
+      <label>Fasting start date & time<input id="fastStartInput" type="datetime-local"></label>
+    </div>
+    <p class="small muted" id="fastPatternHint">16 hours fasting.</p>
+    <p class="small" style="color:#9a5a12">Long fasts (24–72 hours) can carry significant risks. The app is a tracker, not a recommendation to attempt prolonged fasting. Consider medical advice first, and stop if you feel unwell.</p>
+    <button id="startFast" class="primary">Start and save fast</button>
+  </div>
+  <div class="panel" id="activeFastPanel"><h3>Current fast</h3><div id="activeFastView" class="empty">You don't have an active fast.</div></div>
+  <div class="panel"><h3>Fasting state and progress</h3><p class="muted small">A general educational guide, not a precise biological clock. Timing differs with the previous meal, activity, health, and individual metabolism. Autophagy cannot be timed reliably from the number of hours fasted.</p><div id="fastStageGuide"></div><p class="muted small">Research reading: <a href="https://journals.physiology.org/doi/full/10.1152/physrev.00006.2022" target="_blank" rel="noopener">Physiological review of fasting and time-restricted eating</a> · <a href="https://jamanetwork.com/journals/jama/fullarticle/2784658" target="_blank" rel="noopener">JAMA review: intermittent fasting and potential risks</a>.</p></div>
+  <div class="panel"><div class="section-row"><h3>Fasting history</h3><span id="fastWeekSummary" class="badge">This week</span></div><div id="fastHistory"></div></div>
+</section>
+
+
+<section id="journal" class="page">
+  <div class="page-heading"><div><p class="eyebrow">REFLECT AND RESET</p><h2>Daily journal</h2></div><input type="date" id="journalDate"></div>
+  <div class="panel">
+    <label>How was today?<textarea id="journalText" rows="12" placeholder="Write anything you want to remember about today..."></textarea></label>
+    <div class="section-row"><span class="muted" id="journalStatus">Saved on this device.</span><button id="saveJournal" class="primary">Save journal</button></div>
+  </div>
+</section>
+
+<section id="currentActivity" class="page">
+  <div class="page-heading"><div><p class="eyebrow">LIVE SESSION</p><h2>Current activity</h2></div></div>
+  <div class="panel" id="currentActivityPanel"><div class="empty">No current activity</div></div>
+</section>
+
+<section id="settings" class="page">
+  <div class="page-heading"><div><p class="eyebrow">YOUR PROFILE</p><h2>Settings</h2></div></div>
+  <div class="panel">
+    <form id="settingsForm" class="form-grid">
+      <label>Name<input id="profileName" placeholder="Your name"></label>
+      <label>Age<input id="profileAge" type="number" min="1" max="120" placeholder="Age"></label>
+      <label>Gender<select id="profileGender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select></label>
+      <label>Current weight<input id="profileWeight" type="number" min="1" step="0.1" placeholder="e.g. 90"></label>
+      <label>Weight unit<select id="weightUnit"><option value="kg">kg</option><option value="lb">lb</option></select></label>
+      <label>Height<input id="profileHeight" type="number" min="1" step="0.1" placeholder="e.g. 175"></label>
+      <label>Height unit<select id="heightUnit"><option value="cm">cm</option><option value="in">inches</option></select></label>
+      <button class="primary" type="submit">Save personal details</button>
+    </form>
+  </div>
+  <div class="panel"><h3>Data & privacy</h3><p class="muted">Your routines, plans, journal and profile are stored locally in this browser on this device. They are not synced to an account.</p><div class="toolbar"><button id="exportData" class="secondary">Export backup (JSON)</button><label class="secondary file-label">Import backup<input type="file" id="importData" accept="application/json" hidden></label><button id="resetData" class="danger">Delete all app data</button></div></div>
+  <div class="panel"><h3>About estimates</h3><p class="muted small">Cardio calories are estimates based on activity type, duration/distance, body weight and intensity. Average heart rate is a formula-based estimate, not a measurement. Use a heart-rate monitor for actual heart-rate data. These estimates are for general fitness tracking, not medical advice.</p></div>
+</section>
+</main>
+<footer>PERSONAL HEALTH <span>•</span> Your data stays on this device</footer>
+<script src="app.js"></script>
+</body>
+</html>
